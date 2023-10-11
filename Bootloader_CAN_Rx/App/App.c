@@ -14,22 +14,13 @@
 #include <stdint.h>
 
 /* Include TivaWare library header files */
-#include "inc/hw_gpio.h"
-#include "inc/hw_memmap.h"
 #include "inc/hw_nvic.h"
 #include "inc/hw_sysctl.h"
-#include "inc/hw_can.h"
-#include "inc/hw_ints.h"
-#include "inc/hw_types.h"
-#include "inc/hw_types.h"
 #include "driverlib/debug.h"
-#include "driverlib/gpio.h"
-#include "driverlib/pin_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 #include "driverlib/flash.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/can.h"
+
 
 /* Include a custom header file */
 #include "App.h"
@@ -72,17 +63,16 @@ void system_Config(void)
     {
     }
 
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_3);
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3);
+
     /* Enable the interrupts.*/
     GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_4);
     GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_STRENGTH_12MA, GPIO_PIN_TYPE_STD_WPU);
-    GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_FALLING_EDGE);
-    GPIOIntEnable(GPIO_PORTF_BASE, GPIO_PIN_4);
-    IntEnable(INT_GPIOF);
 
     /* Initialize CAN Communication */
     Can_Init();
+
+
 
 }
 
@@ -102,7 +92,7 @@ void JumpToBootLoader(uint32_t addr)
     HWREG(NVIC_VTABLE) = addr;
 
     /* Calculate the reset handler address by adding an offset to the address */
-    uint32_t Reset_Handler_newProgram = addr + 0x0000103d;
+    uint32_t Reset_Handler_newProgram = addr + 0x00001045;
 
     /* Call the bootloader via the modified function pointer */
     CALL_BOOTLOADER(Reset_Handler_newProgram);
@@ -192,7 +182,7 @@ void CAN_MessageInit(tCANMsgObject* msgObject, uint32_t msgID, uint32_t msgIDMas
 
 void SimpleDelay(void) {
     /* Delay cycles for 1 second */
-    SysCtlDelay(16000000 / 3);
+    SysCtlDelay(16000000 / 8);
 }
 
 void CANIntHandler(void) {
@@ -246,5 +236,20 @@ void CANIntHandler(void) {
     }
 }
 
+void Blue_LED_Toggle(void)
+{
+    static uint32_t toggle = GPIO_PIN_2;
+    toggle ^= GPIO_PIN_2;
+    /* toggle the blue led */
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, toggle);
+}
+
+void Green_LED_Toggle(void)
+{
+    static uint32_t toggle = GPIO_PIN_3;
+    toggle ^= GPIO_PIN_3;
+    /* toggle the blue led */
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, toggle);
+}
 
 

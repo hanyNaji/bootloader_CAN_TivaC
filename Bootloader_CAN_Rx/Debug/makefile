@@ -125,34 +125,34 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-Boatloader_CAN.out \
+Bootloader_CAN_Rx.out \
 
 EXE_OUTPUTS__QUOTED += \
-"Boatloader_CAN.out" \
+"Bootloader_CAN_Rx.out" \
 
 BIN_OUTPUTS += \
-Boatloader_CAN.hex \
+Bootloader_CAN_Rx.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"Boatloader_CAN.hex" \
+"Bootloader_CAN_Rx.hex" \
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "Boatloader_CAN.out" secondary-outputs
+	@$(MAKE) --no-print-directory -Onone "Bootloader_CAN_Rx.out" secondary-outputs
 
 # Tool invocations
-Boatloader_CAN.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+Bootloader_CAN_Rx.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: Arm Linker'
-	"C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --c99 --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"Boatloader_CAN.map" --heap_size=0 --stack_size=512 -i"C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/lib" -i"C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Boatloader_CAN_linkInfo.xml" --rom_model -o "Boatloader_CAN.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --c99 --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"Bootloader_CAN_Rx.map" --heap_size=0 --stack_size=512 -i"C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/lib" -i"C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Bootloader_CAN_Rx_linkInfo.xml" --rom_model -o "Bootloader_CAN_Rx.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
-Boatloader_CAN.hex: $(EXE_OUTPUTS)
+Bootloader_CAN_Rx.hex: $(EXE_OUTPUTS)
 	@echo 'Building secondary target: "$@"'
 	@echo 'Invoking: Arm Hex Utility'
-	"C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" --diag_wrap=off --array -o "Boatloader_CAN.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" --diag_wrap=off --array -o "Bootloader_CAN_Rx.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building secondary target: "$@"'
 	@echo ' '
 

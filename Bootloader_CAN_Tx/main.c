@@ -1,33 +1,52 @@
+/*
+ * main.c
+ *
+ *  Created on: Oct 10, 2023
+ *      Author: hany Nagy
+ */
 
+/*Include standard C libraries*/
 #include <stdbool.h>
 #include <stdint.h>
-#include "inc/hw_can.h"
-#include "inc/hw_ints.h"
-#include "driverlib/gpio.h"
-#include "inc/hw_memmap.h"
-#include "driverlib/can.h"
-#include "driverlib/gpio.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/pin_map.h"
 
+/* Include a custom header file */
 #include "App/App.h"
 #include "App/Flash1_image_0.h"
 #include "App/Flash2_image_0.h"
 
 
-
-#define FIRMWARE_LEN    9024
+/* New Firmware length */
+#define FIRMWARE_1_LEN    5056
+#define FIRMWARE_2_LEN    5048
 
 
 volatile uint8_t sendFirmware_flag = 0;
 extern volatile uint32_t g_ui32MsgCount ;
 
+
+#define GPIO_PORTF_MIS_R    (*((volatile unsigned long *)0x40025418))
+
 void GPIOFIntHandler(void)
 {
-    /* Clear the interrupt for GPIO_PIN_4 */
-    GPIOIntClear(GPIO_PORTF_BASE, GPIO_PIN_4);
-    /* Set flag to send the firmware */
-    sendFirmware_flag = 1;
+    /* check if interrupt causes by PF4/SW1*/
+    if (GPIO_PORTF_MIS_R & GPIO_PIN_4)
+    {
+        /* Clear the interrupt for GPIO_PIN_4 */
+        GPIOIntClear(GPIO_PORTF_BASE, GPIO_PIN_4);
+        /* Set flag to send the firmware */
+        sendFirmware_flag = 1;
+    }
+    /* check if interrupt causes by PF0/SW2 */
+    else if (GPIO_PORTF_MIS_R & GPIO_PIN_0)
+    {
+        /* Clear the interrupt for GPIO_PIN_1 */
+        GPIOIntClear(GPIO_PORTF_BASE, GPIO_PIN_0);
+        /* Set flag to send the firmware */
+        sendFirmware_flag = 2;
+    }
+    else {
+        /* Do nothing for MISRA */
+    }
 }
 
 void main (){
@@ -53,14 +72,11 @@ void main (){
         /* Check if the sendFirmware_flag is set */
         if (sendFirmware_flag)
         {
+            /* Clear GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 */
+            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3, 0x0);
+
             /* Reset the message count */
             g_ui32MsgCount = 0;
-
-            /* Clear the sendFirmware_flag */
-            sendFirmware_flag = 0;
-
-            /* Set GPIO_PORTF_BASE, GPIO_PIN_1 high */
-            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
             /* Set the CAN message data pointer to pui8MsgData1 */
             sCANMessage.pui8MsgData = pui8MsgData1;
@@ -69,28 +85,64 @@ void main (){
             CANMessageSet(CAN0_BASE, 1, &sCANMessage, MSG_OBJ_TYPE_TX);
 
             uint16_t size;
-
-            /* Loop through firmware data blocks */
-            for (size = 0; size < FIRMWARE_LEN / 8; size++)
+            if(sendFirmware_flag==1)
             {
-                int i;
+                /* Set GPIO_PORTF_BASE, GPIO_PIN_2 high */
+                GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
 
-                /* Delay loop for a brief period */
-                for (i = 0; i < 500; i++);
+                /* Loop through firmware data blocks */
+                for (size = 0; size < FIRMWARE_1_LEN / 8; size++)
+                {
+                    int i;
 
-                /* Set the CAN message data pointer to the current firmware data block */
-                sCANMessage.pui8MsgData = FLash1_image_0 + (size * 8);
+                    /* Delay loop for a brief period */
+                    for (i = 0; i < 500; i++);
 
-                /* Send a CAN message with object 1 */
-                CANMessageSet(CAN0_BASE, 1, &sCANMessage, MSG_OBJ_TYPE_TX);
+                    /* Set the CAN message data pointer to the current firmware data block */
+                    sCANMessage.pui8MsgData = Flash1_image_0 + (size * 8);
+
+                    /* Send a CAN message with object 1 */
+                    CANMessageSet(CAN0_BASE, 1, &sCANMessage, MSG_OBJ_TYPE_TX);
+                }
             }
+            else if(sendFirmware_flag==2)
+            {
+                /* Set GPIO_PORTF_BASE, GPIO_PIN_1 high */
+                GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
+
+                /* Loop through firmware data blocks */
+                for (size = 0; size < FIRMWARE_2_LEN / 8; size++)
+                {
+                    int i;
+
+                    /* Delay loop for a brief period */
+                    for (i = 0; i < 500; i++);
+
+                    /* Set the CAN message data pointer to the current firmware data block */
+                    sCANMessage.pui8MsgData = Flash2_image_0 + (size * 8);
+
+                    /* Send a CAN message with object 1 */
+                    CANMessageSet(CAN0_BASE, 1, &sCANMessage, MSG_OBJ_TYPE_TX);
+                }
+
+            }
+            else{
+                /*  */
+            }
+
+
+            /* Clear the sendFirmware_flag */
+            sendFirmware_flag = 0;
 
             /* Call a simple delay function */
             SimpleDelay();
 
-            /* Clear GPIO_PORTF_BASE, GPIO_PIN_1 */
-            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0x0);
+            /* Clear GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 */
+            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3, 0x0);
+            /* Set GPIO_PORTF_BASE, GPIO_PIN_1 high */
+            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
         }
+
     }
 
 }

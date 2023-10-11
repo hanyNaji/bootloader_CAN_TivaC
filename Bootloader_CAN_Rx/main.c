@@ -1,15 +1,15 @@
+/*
+ * main.c
+ *
+ *  Created on: Oct 10, 2023
+ *      Author: hany Nagy
+ */
 
+/*Include standard C libraries*/
 #include <stdbool.h>
 #include <stdint.h>
-#include "inc/hw_gpio.h"
-#include "inc/hw_memmap.h"
-#include "inc/hw_types.h"
-#include "driverlib/gpio.h"
-#include "driverlib/pin_map.h"
-#include "inc/hw_ints.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/can.h"
-#include "inc/hw_can.h"
+
+/* Include a custom header file */
 #include "App/App.h"
 
 
@@ -29,7 +29,7 @@ uint32_t new_APP_Addr = 0x00020000;
 uint32_t current_APP_Addr = 0x00000000;
 #endif
 
-#define FIRMWARE_LEN    9024
+#define FIRMWARE_LEN    5048
 
 extern volatile bool g_bRXFlag ;
 extern volatile uint32_t g_ui32MsgCount ;
@@ -39,21 +39,14 @@ uint8_t pui8MsgData[8];
 uint8_t APP1_image_0[FIRMWARE_LEN];
 
 
-/* Interrupt handler for GPIOF */
-void GPIOFIntHandler(void)
-{
-    /* Clear the interrupt for GPIO_PIN_4 */
-    GPIOIntClear(GPIO_PORTF_BASE, GPIO_PIN_4);
-
-    /* Jump to the bootloader using the provided new_APP_Addr */
-    JumpToBootLoader(new_APP_Addr);
-}
-
-
 /* Function to receive firmware over CAN */
 void CAN_receiveFirmware(void)
 {
     g_ui32MsgCount = 0;
+    /* Clear GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 */
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3, 0x0);
+    /* Set GPIO_PORTF_BASE, GPIO_PIN_1 high */
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
     for (;;)
     {
@@ -79,8 +72,10 @@ void CAN_receiveFirmware(void)
     /* Update the firmware using the UpdateFirmWare function */
     UpdateFirmWare(pFirmware, new_APP_Addr, FIRMWARE_LEN);
 
-    /* Clear the GPIO_PORTF_BASE, GPIO_PIN_3 */
-    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0x0);
+    /* Call a simple delay function */
+    SimpleDelay();
+    /* Clear GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 */
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3, 0x0);
 
     /* Jump to the bootloader using the provided new_APP_Addr */
     JumpToBootLoader(new_APP_Addr);
@@ -106,6 +101,8 @@ void main(void)
     CANMessageSet(CAN0_BASE, 1, &sCANMessage, MSG_OBJ_TYPE_RX);
     sCANMessage.pui8MsgData = pui8MsgData;
 
+    uint32_t counter = 0;
+
     for(;;){
 
         if(g_bRXFlag){
@@ -118,6 +115,33 @@ void main(void)
                 CAN_receiveFirmware();
             }
         }
+
+        else if(counter >= 800000)
+        {
+            counter = 0;
+#if(USE_APP==1)
+            /*APP 1*/
+            Blue_LED_Toggle();
+#endif
+#if(USE_APP==2)
+            /*APP 2*/
+            Green_LED_Toggle();
+#endif
+
+        }
+        /* increment the counter to toggle the led again */
+        counter++;
+
+        if(! GPIOPinRead(GPIO_PORTF_BASE, GPIO_PIN_4))
+        {
+            /* Clear GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 */
+            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3, 0x0);
+            /* Call a simple delay function */
+            SimpleDelay();
+            /* Jump to the bootloader using the provided new_APP_Addr */
+            JumpToBootLoader(new_APP_Addr);
+        }
+
     }
 }
 

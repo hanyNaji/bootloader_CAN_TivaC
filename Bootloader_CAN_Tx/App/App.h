@@ -9,6 +9,16 @@
 #ifndef APP_APP_H_
 #define APP_APP_H_
 
+/* Include TivaWare library header files */
+#include "inc/hw_can.h"
+#include "inc/hw_ints.h"
+#include "driverlib/gpio.h"
+#include "inc/hw_memmap.h"
+#include "driverlib/can.h"
+#include "driverlib/gpio.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
+
 
 /* Define the CAN message structure */
 typedef struct {

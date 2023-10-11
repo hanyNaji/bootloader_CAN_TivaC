@@ -12,15 +12,17 @@ App/App.obj: C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/
 App/App.obj: C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_types.h
 App/App.obj: C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h
 App/App.obj: C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h
+App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/sysctl.h
+App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_types.h
+App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_gpio.h
+App/App.obj: ../App/App.h
 App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_can.h
 App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_ints.h
+App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/gpio.h
 App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_memmap.h
 App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/can.h
-App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/gpio.h
 App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/interrupt.h
 App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/pin_map.h
-App/App.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/sysctl.h
-App/App.obj: ../App/App.h
 
 ../App/App.c:
 
@@ -46,21 +48,25 @@ C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h
 
 C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h:
 
+C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/sysctl.h:
+
+C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_types.h:
+
+C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_gpio.h:
+
+../App/App.h:
+
 C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_can.h:
 
 C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_ints.h:
+
+C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/gpio.h:
 
 C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_memmap.h:
 
 C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/can.h:
 
-C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/gpio.h:
-
 C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/interrupt.h:
 
 C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/pin_map.h:
-
-C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/sysctl.h:
-
-../App/App.h:
 

@@ -6,18 +6,15 @@
  *          - Hany Nagy - Muhammed Al shafie - Waleed Gamal - Hamdy Elsayd
  */
 
-
+/*Include standard C libraries*/
 #include <stdbool.h>
 #include <stdint.h>
-#include "inc/hw_can.h"
-#include "inc/hw_ints.h"
-#include "inc/hw_memmap.h"
-#include "driverlib/can.h"
-#include "driverlib/gpio.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/pin_map.h"
+/* Include TivaWare library header files */
 #include "driverlib/sysctl.h"
+#include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
 
+/* Include a custom header file */
 #include "App.h"
 
 
@@ -33,10 +30,11 @@ volatile uint32_t g_ui32MsgCount = 0;
 volatile bool g_bErrFlag = 0;
 
 
-
-
 void system_Config(void)
 {
+    /* Set the system clock to use a 16MHz external crystal oscillator (main oscillator). */
+    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+
     /* Enable the GPIO port that is used for the on-board LED. */
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 
@@ -45,13 +43,19 @@ void system_Config(void)
     {
     }
 
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3);
+    /* Set GPIO_PORTF_BASE, GPIO_PIN_1 high */
+    GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
     /* Enable the interrupts.*/
-    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_4);
-    GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_STRENGTH_12MA, GPIO_PIN_TYPE_STD_WPU);
-    GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_4, GPIO_FALLING_EDGE);
-    GPIOIntEnable(GPIO_PORTF_BASE, GPIO_PIN_4);
+    HWREG(GPIO_PORTF_BASE+GPIO_O_LOCK) = GPIO_LOCK_KEY;
+    HWREG(GPIO_PORTF_BASE+GPIO_O_CR) |= GPIO_PIN_0;
+    GPIOPinTypeGPIOInput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4);
+    GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4, GPIO_STRENGTH_12MA, GPIO_PIN_TYPE_STD_WPU);
+    GPIOIntTypeSet(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4, GPIO_FALLING_EDGE);
+    GPIOIntEnable(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4);
+
+    /* enable interrupt in NVIC */
     IntEnable(INT_GPIOF);
 
     /* Initialize CAN Communication */
@@ -61,9 +65,6 @@ void system_Config(void)
 
 
 void Can_Init() {
-    /* Set the system clock to use a 16MHz external crystal oscillator (main oscillator). */
-    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
-
     /* Enable the GPIO (General-Purpose Input/Output) peripheral for Port B. */
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 
@@ -118,7 +119,7 @@ void CAN_MessageInit(tCANMsgObject* msgObject, uint32_t msgID, uint32_t msgIDMas
 
 void SimpleDelay(void) {
     /* Delay cycles for 1 second */
-    SysCtlDelay(SysCtlClockGet() / 6);
+    SysCtlDelay(SysCtlClockGet() / 8);
 }
 
 void CANIntHandler(void) {

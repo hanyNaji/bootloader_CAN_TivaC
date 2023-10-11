@@ -9,6 +9,18 @@
 #ifndef APP_APP_H_
 #define APP_APP_H_
 
+/* Include TivaWare library header files */
+#include "inc/hw_gpio.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "driverlib/gpio.h"
+#include "driverlib/pin_map.h"
+#include "inc/hw_ints.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/can.h"
+#include "inc/hw_can.h"
+
+
 /* System Configurations */
 void system_Config(void);
 
@@ -22,6 +34,8 @@ void SimpleDelay(void);
 void CANIntHandler(void);
 void CAN_receiveFirmware(void);
 
+void Blue_LED_Toggle(void);
+void Green_LED_Toggle(void);
 
 /* BootLoader Functions prototypes */
 

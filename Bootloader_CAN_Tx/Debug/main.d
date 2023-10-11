@@ -12,6 +12,7 @@ main.obj: C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_ty
 main.obj: C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_types.h
 main.obj: C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h
 main.obj: C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h
+main.obj: ../App/App.h
 main.obj: C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_can.h
 main.obj: C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_ints.h
 main.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/gpio.h
@@ -19,8 +20,6 @@ main.obj: C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_memmap.h
 main.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/can.h
 main.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/interrupt.h
 main.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/pin_map.h
-main.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/sysctl.h
-main.obj: ../App/App.h
 main.obj: ../App/Flash1_image_0.h
 main.obj: ../App/Flash2_image_0.h
 
@@ -48,6 +47,8 @@ C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/machine/_stdint.h
 
 C:/ti/ccs1240/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include/sys/_stdint.h:
 
+../App/App.h:
+
 C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_can.h:
 
 C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_ints.h:
@@ -61,10 +62,6 @@ C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/can.h:
 C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/interrupt.h:
 
 C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/pin_map.h:
-
-C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/sysctl.h:
-
-../App/App.h:
 
 ../App/Flash1_image_0.h:
 
